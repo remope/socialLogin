@@ -26,11 +26,13 @@ public class JwtProvider {
         //만료 기간
         Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
 
+        //JWT에서 생성, 검증할 때 사용하는 HMAC-SHA 알고리즘 기반의 비밀 키 생성
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
+        // JWT 생성
         String jwt = Jwts.builder()
-                .signWith(key, SignatureAlgorithm.HS256)
-                .setSubject(userId).setIssuedAt(new Date()).setExpiration(expiredDate)
+                .signWith(key, SignatureAlgorithm.HS256)    // JWT에 서명 추가
+                .setSubject(userId).setIssuedAt(new Date()).setExpiration(expiredDate)  // JWT의 sub claim 설정, 여기서는 userId로 설정, 및 setIssuedAt은 발행 시간(iat claim)
                 .compact();
 
         return jwt;

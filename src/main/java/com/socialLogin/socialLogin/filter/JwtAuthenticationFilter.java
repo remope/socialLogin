@@ -48,15 +48,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserEntity userEntity = userRepository.findByUserId(userId);
             String role = userEntity.getRole(); //  role = ROLE_USER, ROLE_ADMIN
 
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority(role));
+            List<GrantedAuthority> authorities = new ArrayList<>(); // GrantedAuthority -> 사용자가 가진 권한을 나타내는 인터페이스
+            authorities.add(new SimpleGrantedAuthority(role));      // SimpleGrantedAuthority -> GrantedAuthority의 가장 간단한 구현체, 사용자의 권한을 문자열로 표현
 
             SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
             AbstractAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(userId, null, authorities);    //접근 주체에 대한 정보, 비밀번호 + 권한
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    new UsernamePasswordAuthenticationToken(userId, null, authorities);    //접근 주체에 대한 정보, 비밀번호 + 권한 등을 사용해 인증 객체 생성
+            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request)); // 추가적인 인증 세부 정보 설정
 
-            securityContext.setAuthentication(authenticationToken);
+            securityContext.setAuthentication(authenticationToken); // 비어있는 securityContext에 생성한 authenticationToken을 설
             SecurityContextHolder.setContext(securityContext);
 
         } catch(Exception exception) {
