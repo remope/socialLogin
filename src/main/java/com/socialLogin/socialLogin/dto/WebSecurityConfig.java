@@ -39,12 +39,12 @@ public class WebSecurityConfig {
                         .configurationSource(corsConfigurationSource())
 
                 )
-                .csrf(CsrfConfigurer::disable)
-                .httpBasic(HttpBasicConfigurer::disable)
+                .csrf(CsrfConfigurer::disable)  //JWT와 같은 토큰 기반 인증 시스템에서는 CSRF보호가 필요하지 않다고 함
+                .httpBasic(HttpBasicConfigurer::disable)    // JWT 기반 인증을 사용할 경우 일반적으로 비활성화
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authorizeHttpRequests(request -> request
+                )   // 세션 상태를 저장하지 않도록 함 -> JWT 기반 인증은 상태를 서버에 저장하지 않기 때문
+                .authorizeHttpRequests(request -> request   // Http 요청에 대한 권한을 설정
                         .requestMatchers("/**")   //어떤 패턴에 대해 작업을 할거냐?  .requestMatchers("/", "/api/v1/auth/**")
                         .permitAll()        // .requestMatchers("/api/v1/user/**").hasRole("USER")  -> 해당 url은 USER 권한을 가진 사람만
                                             // .requestMatchers("/qpi/v1/admin/**").hasRole("ADMIN") -> 해당 url은 admin 권한을 가진 사람만
