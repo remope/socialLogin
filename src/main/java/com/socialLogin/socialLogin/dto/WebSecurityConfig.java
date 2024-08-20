@@ -45,7 +45,7 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )   // 세션 상태를 저장하지 않도록 함 -> JWT 기반 인증은 상태를 서버에 저장하지 않기 때문
                 .authorizeHttpRequests(request -> request   // Http 요청에 대한 권한을 설정
-                        .requestMatchers("/**")   //어떤 패턴에 대해 작업을 할거냐?  .requestMatchers("/", "/api/v1/auth/**")
+                        .requestMatchers("/", "/v1/auth/**")   //어떤 패턴에 대해 작업을 할거냐?  .requestMatchers("/", "/api/v1/auth/**")
                         .permitAll()        // .requestMatchers("/api/v1/user/**").hasRole("USER")  -> 해당 url은 USER 권한을 가진 사람만
                                             // .requestMatchers("/qpi/v1/admin/**").hasRole("ADMIN") -> 해당 url은 admin 권한을 가진 사람만
                         .anyRequest().authenticated()

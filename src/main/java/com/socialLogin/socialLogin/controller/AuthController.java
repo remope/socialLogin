@@ -1,6 +1,9 @@
 package com.socialLogin.socialLogin.controller;
 
+import com.socialLogin.socialLogin.dto.request.auth.EmailCertificationRequestDto;
 import com.socialLogin.socialLogin.dto.request.auth.IdCheckRequestDto;
+import com.socialLogin.socialLogin.dto.response.ResponseDto;
+import com.socialLogin.socialLogin.dto.response.auth.EmailCertificationResponseDto;
 import com.socialLogin.socialLogin.dto.response.auth.IdCheckResponseDto;
 import com.socialLogin.socialLogin.service.AuthService;
 import jakarta.validation.Valid;
@@ -23,6 +26,14 @@ public class AuthController {
             @RequestBody @Valid IdCheckRequestDto requestBody
             ) {
         ResponseEntity<? super IdCheckResponseDto> response = authService.idCheck(requestBody);
+        return response;
+    }
+
+    @PostMapping("/email-certification")
+    public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(
+            @RequestBody @Valid EmailCertificationRequestDto requestBody
+            ) {
+        ResponseEntity<? super EmailCertificationResponseDto> response = authService.emailCertification(requestBody);
         return response;
     }
 }
