@@ -1,9 +1,11 @@
 package com.socialLogin.socialLogin.service.iplement;
 
 import com.socialLogin.socialLogin.common.CertificationNumber;
+import com.socialLogin.socialLogin.dto.request.auth.CheckCertificationRequestDto;
 import com.socialLogin.socialLogin.dto.request.auth.EmailCertificationRequestDto;
 import com.socialLogin.socialLogin.dto.request.auth.IdCheckRequestDto;
 import com.socialLogin.socialLogin.dto.response.ResponseDto;
+import com.socialLogin.socialLogin.dto.response.auth.CheckCertificationResponseDto;
 import com.socialLogin.socialLogin.dto.response.auth.EmailCertificationResponseDto;
 import com.socialLogin.socialLogin.dto.response.auth.IdCheckResponseDto;
 import com.socialLogin.socialLogin.entity.CertificationEntity;
@@ -65,5 +67,32 @@ public class AuthServiceImplement implements AuthService {
         }
 
         return EmailCertificationResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super CheckCertificationResponseDto> checkCertification(CheckCertificationRequestDto dto) {
+        try {
+
+            String userId = dto.getId();
+            String email = dto.getEmail();
+            String certificationNumber = dto.getCertificationNumber();
+
+            CertificationEntity certificationEntity = certificationRepository.findByUserId(userId);
+            if(certificationEntity == null) {
+                return CheckCertificationResponseDto.certificationFail();
+            }
+
+            boolean isMatched = certificationEntity.getEmail().equals(email) && certificationEntity.getCertificationNumber().equals(certificationNumber);
+
+            if(!isMatched) {
+                return CheckCertificationResponseDto.certificationFail();
+            }
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return CheckCertificationResponseDto.success();
     }
 }
