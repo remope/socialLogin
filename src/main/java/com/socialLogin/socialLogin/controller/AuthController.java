@@ -1,14 +1,8 @@
 package com.socialLogin.socialLogin.controller;
 
-import com.socialLogin.socialLogin.dto.request.auth.CheckCertificationRequestDto;
-import com.socialLogin.socialLogin.dto.request.auth.EmailCertificationRequestDto;
-import com.socialLogin.socialLogin.dto.request.auth.IdCheckRequestDto;
-import com.socialLogin.socialLogin.dto.request.auth.SignUpRequestDto;
+import com.socialLogin.socialLogin.dto.request.auth.*;
 import com.socialLogin.socialLogin.dto.response.ResponseDto;
-import com.socialLogin.socialLogin.dto.response.auth.CheckCertificationResponseDto;
-import com.socialLogin.socialLogin.dto.response.auth.EmailCertificationResponseDto;
-import com.socialLogin.socialLogin.dto.response.auth.IdCheckResponseDto;
-import com.socialLogin.socialLogin.dto.response.auth.SignUpResponseDto;
+import com.socialLogin.socialLogin.dto.response.auth.*;
 import com.socialLogin.socialLogin.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +48,14 @@ public class AuthController {
             @RequestBody @Valid SignUpRequestDto requestBody
             ) {
         ResponseEntity<? super SignUpResponseDto> response = authService.signUp(requestBody);
+        return response;
+    }
+
+    @PostMapping("/sign-in")
+    public ResponseEntity<? super SignInResponseDto> signIn(
+            @RequestBody @Valid SignInRequestDto requestBody
+            ) {
+        ResponseEntity<? super SignInResponseDto> response = authService.signIn(requestBody);
         return response;
     }
 }

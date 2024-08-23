@@ -1,18 +1,13 @@
 package com.socialLogin.socialLogin.service.iplement;
 
 import com.socialLogin.socialLogin.common.CertificationNumber;
-import com.socialLogin.socialLogin.dto.request.auth.CheckCertificationRequestDto;
-import com.socialLogin.socialLogin.dto.request.auth.EmailCertificationRequestDto;
-import com.socialLogin.socialLogin.dto.request.auth.IdCheckRequestDto;
-import com.socialLogin.socialLogin.dto.request.auth.SignUpRequestDto;
+import com.socialLogin.socialLogin.dto.request.auth.*;
 import com.socialLogin.socialLogin.dto.response.ResponseDto;
-import com.socialLogin.socialLogin.dto.response.auth.CheckCertificationResponseDto;
-import com.socialLogin.socialLogin.dto.response.auth.EmailCertificationResponseDto;
-import com.socialLogin.socialLogin.dto.response.auth.IdCheckResponseDto;
-import com.socialLogin.socialLogin.dto.response.auth.SignUpResponseDto;
+import com.socialLogin.socialLogin.dto.response.auth.*;
 import com.socialLogin.socialLogin.entity.CertificationEntity;
 import com.socialLogin.socialLogin.entity.UserEntity;
 import com.socialLogin.socialLogin.provider.EmailProvider;
+import com.socialLogin.socialLogin.provider.JwtProvider;
 import com.socialLogin.socialLogin.repository.CertificationRepository;
 import com.socialLogin.socialLogin.repository.UserRepository;
 import com.socialLogin.socialLogin.service.AuthService;
@@ -27,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImplement implements AuthService {
 
     private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
     private final EmailProvider emailProvider;
     private final CertificationRepository certificationRepository;
 
@@ -141,5 +137,35 @@ public class AuthServiceImplement implements AuthService {
         }
 
         return SignUpResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
+
+        String token = null;
+
+        try{
+
+            String userId = dto.getId();
+            UserEntity userEntity = userRepository.findByUserId(userId);
+            if(userEntity == null) {
+                return SignInResponseDto.signInFail();
+            }
+
+            String password = dto.getPassword();
+            String encodedPassword = userEntity.getPassword();
+            boolean isMatched = passwordEncoder.matches(password, encodedPassword);
+            if(!isMatched) {
+                return SignInResponseDto.signInFail();
+            }
+
+            token = jwtProvider.create(userId);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return SignInResponseDto.success(token);
     }
 }

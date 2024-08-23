@@ -1,14 +1,8 @@
 package com.socialLogin.socialLogin.service;
 
 
-import com.socialLogin.socialLogin.dto.request.auth.CheckCertificationRequestDto;
-import com.socialLogin.socialLogin.dto.request.auth.EmailCertificationRequestDto;
-import com.socialLogin.socialLogin.dto.request.auth.IdCheckRequestDto;
-import com.socialLogin.socialLogin.dto.request.auth.SignUpRequestDto;
-import com.socialLogin.socialLogin.dto.response.auth.CheckCertificationResponseDto;
-import com.socialLogin.socialLogin.dto.response.auth.EmailCertificationResponseDto;
-import com.socialLogin.socialLogin.dto.response.auth.IdCheckResponseDto;
-import com.socialLogin.socialLogin.dto.response.auth.SignUpResponseDto;
+import com.socialLogin.socialLogin.dto.request.auth.*;
+import com.socialLogin.socialLogin.dto.response.auth.*;
 import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
@@ -17,4 +11,6 @@ public interface AuthService {
     ResponseEntity<? super EmailCertificationResponseDto> emailCertification(EmailCertificationRequestDto dto);
     ResponseEntity<? super CheckCertificationResponseDto> checkCertification(CheckCertificationRequestDto dto);
     ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto);
+
+    ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto);
 }
