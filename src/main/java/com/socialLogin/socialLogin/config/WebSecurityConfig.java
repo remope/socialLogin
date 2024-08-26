@@ -1,4 +1,4 @@
-package com.socialLogin.socialLogin.dto;
+package com.socialLogin.socialLogin.config;
 
 import com.socialLogin.socialLogin.filter.JwtAuthenticationFilter;
 import jakarta.servlet.ServletException;
@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -30,6 +31,7 @@ import java.io.IOException;
 public class WebSecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final DefaultOAuth2UserService oAuth2UserService;
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
@@ -45,10 +47,14 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )   // 세션 상태를 저장하지 않도록 함 -> JWT 기반 인증은 상태를 서버에 저장하지 않기 때문
                 .authorizeHttpRequests(request -> request   // Http 요청에 대한 권한을 설정
-                        .requestMatchers("/", "/v1/auth/**")   //어떤 패턴에 대해 작업을 할거냐?  .requestMatchers("/", "/api/v1/auth/**")
+                        .requestMatchers("/", "/v1/auth/**", "/oauth2/**")   //어떤 패턴에 대해 작업을 할거냐?  .requestMatchers("/", "/api/v1/auth/**")
                         .permitAll()        // .requestMatchers("/api/v1/user/**").hasRole("USER")  -> 해당 url은 USER 권한을 가진 사람만
                                             // .requestMatchers("/qpi/v1/admin/**").hasRole("ADMIN") -> 해당 url은 admin 권한을 가진 사람만
                         .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
+                        .userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(new FailedAuthenticationEntryPoint()))
